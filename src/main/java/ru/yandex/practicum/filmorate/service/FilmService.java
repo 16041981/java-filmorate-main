@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-//import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
@@ -41,7 +40,7 @@ public class FilmService {
 
     public List<Film> getPopularMovies(int count) {
         log.info("Attempt to get the most liked movies list");
-        return filmStorage.getFilm().stream()
+        return filmStorage.getFilms().stream()
                 .sorted(Comparator.comparingInt(Film::getLikesQuantity).reversed())
                 .limit(count).collect(Collectors.toList());
     }

@@ -12,9 +12,8 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class User {
-
     @PositiveOrZero
-    private int id;
+    private Long id;
     @Email
     @NotEmpty
     private String email;
@@ -22,6 +21,8 @@ public class User {
     @NotBlank
     @Pattern(regexp = "\\S+")
     private String login;
+    @NotNull
+    @NotBlank
     private String name;
     @PastOrPresent
     @NotNull
@@ -36,7 +37,31 @@ public class User {
         friends.remove(id);
     }
 
-    public int getFriendsQuantity() {
-        return friends.size();
-    }
+//
+//    @PositiveOrZero
+//    private int id;
+//    @Email
+//    @NotEmpty
+//    private String email;
+//    @NotNull
+//    @NotBlank
+//    @Pattern(regexp = "\\S+")
+//    private String login;
+//    private String name;
+//    @PastOrPresent
+//    @NotNull
+//    private LocalDate birthday;
+//    private Set<Long> friends;
+//
+//    public void addFriend(Long id) {
+//        friends.add(id);
+//    }
+//
+//    public void removeFriend(Long id) {
+//        friends.remove(id);
+//    }
+//
+//    public int getFriendsQuantity() {
+//        return friends.size();
+//    }
 }

@@ -12,7 +12,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/films")
+@RequestMapping
 @RequiredArgsConstructor
 public class FilmController {
 
@@ -32,7 +32,7 @@ public class FilmController {
 
     @GetMapping("/films")
     public List<Film> getFilms() {
-        return filmStorage.getFilm();
+        return filmStorage.getFilms();
     }
 
     @PutMapping("/films")
@@ -40,17 +40,17 @@ public class FilmController {
         return filmStorage.updateFilm(film);
     }
 
-    @GetMapping("/popular")
+    @GetMapping("/films/popular")
     public List<Film> getPopularMovies(@RequestParam(defaultValue = "10") Integer count) {
         return filmService.getPopularMovies(count);
     }
 
-    @PutMapping("/{id}/like/{userId}")
+    @PutMapping("/films/{id}/like/{userId}")
     public void likeAMovie(@PathVariable Long id, @PathVariable Long userId) {
         filmService.like(id, userId);
     }
 
-    @DeleteMapping("/{id}/like/{userId}")
+    @DeleteMapping("/films/{id}/like/{userId}")
     public void removeLike(@PathVariable Long id, @PathVariable Long userId) {
         filmService.dislike(id, userId);
     }
