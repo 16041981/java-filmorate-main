@@ -36,32 +36,4 @@ public class User {
     public void removeFriend(Long id) {
         friends.remove(id);
     }
-
-//
-//    @PositiveOrZero
-//    private int id;
-//    @Email
-//    @NotEmpty
-//    private String email;
-//    @NotNull
-//    @NotBlank
-//    @Pattern(regexp = "\\S+")
-//    private String login;
-//    private String name;
-//    @PastOrPresent
-//    @NotNull
-//    private LocalDate birthday;
-//    private Set<Long> friends;
-//
-//    public void addFriend(Long id) {
-//        friends.add(id);
-//    }
-//
-//    public void removeFriend(Long id) {
-//        friends.remove(id);
-//    }
-//
-//    public int getFriendsQuantity() {
-//        return friends.size();
-//    }
 }

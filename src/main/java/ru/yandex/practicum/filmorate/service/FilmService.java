@@ -22,24 +22,24 @@ public class FilmService {
         Film film = filmStorage.getFilmById(filmId);
         userService.getUserStorage().getUserById(userId);
         if (film == null) {
-            throw new ObjectNotFoundException("Attempt to reach non-existing movie with id '" + filmId + "'");
+            throw new ObjectNotFoundException("Попытка доступа к несуществующему фильму с идентификатором '" + filmId + "'");
         }
         film.addLike(userId);
-        log.info("'{}' liked a movie '{}'", userId, filmId);
+        log.info("'{}' понравился фильм '{}'", userId, filmId);
     }
 
     public void dislike(Long filmId, Long userId) {
         Film film = filmStorage.getFilmById(filmId);
         userService.getUserStorage().getUserById(userId);
         if (film == null) {
-            throw new ObjectNotFoundException("Attempt to reach non-existing movie with id '" + filmId + "'");
+            throw new ObjectNotFoundException("Попытка доступа к несуществующему фильму с идентификатором '" + filmId + "'");
         }
         film.removeLike(userId);
         log.info("'{}' disliked a movie '{}'", userId, filmId);
     }
 
     public List<Film> getPopularMovies(int count) {
-        log.info("Attempt to get the most liked movies list");
+        log.info("Попытайтесь получить список самых понравившихся фильмов");
         return filmStorage.getFilms().stream()
                 .sorted(Comparator.comparingInt(Film::getLikesQuantity).reversed())
                 .limit(count).collect(Collectors.toList());

@@ -23,15 +23,15 @@ public class UserService {
         User friend = userStorage.getUserById(friendId);
         user.addFriend(friendId);
         friend.addFriend(userId);
-        log.info("'{}' added '{}' to a friend list", userId, friendId);
+        log.info("'{}' добавлен '{}' в список друзей", userId, friendId);
     }
 
-    public void deleteFriend(Long userId, Long friendId) {
+    public void deleteFriend(Long userId, Long friendId){
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
         user.removeFriend(friendId);
         friend.removeFriend(userId);
-        log.info("'{}' removed '{}' from friends list", userId, friendId);
+        log.info("'{}' удален '{}' из списка друзей", userId, friendId);
     }
 
     public List<User> getCommonFriends(Long userId, Long friendId) {
@@ -39,7 +39,7 @@ public class UserService {
         User friend = userStorage.getUserById(friendId);
         Set<Long> userFriends = user.getFriends();
         Set<Long> friendFriends = friend.getFriends();
-        log.info("'{}' requested common friends' list with user '{}'", userId, friendId);
+        log.info("'{}' запрошенный список общих друзей у пользователя '{}'", userId, friendId);
         if (userFriends.stream().anyMatch(friendFriends::contains)) {
             return userFriends.stream()
                     .filter(userFriends::contains)
@@ -53,9 +53,6 @@ public class UserService {
     public List<User> getFriends(Long userId) {
         User user = userStorage.getUserById(userId);
         Set<Long> friends = user.getFriends();
-        if (friends.isEmpty()) {
-            throw new ObjectNotFoundException("User's friends' list with id '" + userId + "' is empty");
-        }
         return friends.stream()
                 .map(userStorage::getUserById)
                 .collect(Collectors.toList());
@@ -64,49 +61,4 @@ public class UserService {
     public UserStorage getUserStorage() {
         return userStorage;
     }
-//    private final UserStorage userStorage;
-//
-//    public void addFriend(Long userId, Long friendId) {
-//        User user = userStorage.getUserById(userId);
-//        User friend = userStorage.getUserById(friendId);
-//        user.addFriend(friendId);
-//        friend.addFriend(userId);
-//        log.info("'{}' added '{}' to a friend list", userId, friendId);
-//    }
-//
-//    public void deleteFriend(Long userId, Long friendId) {
-//        User user = userStorage.getUserById(userId);
-//        User friend = userStorage.getUserById(friendId);
-//        user.removeFriend(friendId);
-//        friend.removeFriend(userId);
-//        log.info("'{}' removed '{}' from friends list", userId, friendId);
-//    }
-//
-//    public List<User> getCommonFriends(Long userId, Long friendId) {
-//        User user = userStorage.getUserById(userId);
-//        User friend = userStorage.getUserById(friendId);
-//        Set<Long> userFriends = user.getFriends();
-//        Set<Long> friendFriends = friend.getFriends();
-//        log.info("'{}' requested common friends' list with user '{}'", userId, friendId);
-//        if (userFriends.stream().anyMatch(friendFriends::contains)) {
-//            return userFriends.stream()
-//                    .filter(userFriends::contains)
-//                    .filter(friendFriends::contains)
-//                    .map(userStorage::getUserById).collect(Collectors.toList());
-//        } else {
-//            return new ArrayList<>();
-//        }
-//    }
-//
-//    public List<User> getFriends(Long userId) {
-//        User user = userStorage.getUserById(userId);
-//        Set<Long> friends = user.getFriends();
-//        if (friends.isEmpty()) {
-//            throw new ObjectNotFoundException("User's friends' list with id '" + userId + "' is empty");
-//        }
-//        return friends.stream()
-//                .map(userStorage::getUserById)
-//                .collect(Collectors.toList());
-//    }
-
 }
