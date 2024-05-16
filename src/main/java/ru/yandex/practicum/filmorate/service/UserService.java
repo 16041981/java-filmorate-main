@@ -25,7 +25,7 @@ public class UserService {
         log.info("'{}' добавлен '{}' в список друзей", userId, friendId);
     }
 
-    public void deleteFriend(Long userId, Long friendId){
+    public void deleteFriend(Long userId, Long friendId) {
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
         user.removeFriend(friendId);
