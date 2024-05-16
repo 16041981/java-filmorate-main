@@ -57,7 +57,4 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public UserStorage getUserStorage() {
-        return userStorage;
-    }
 }
