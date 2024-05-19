@@ -6,10 +6,9 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.validator.ValidatorFilm;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -17,31 +16,43 @@ import java.util.stream.Collectors;
 public class FilmService {
     private final FilmStorage filmStorage;
     private final UserService userService;
+    ValidatorFilm validatorFilm = new ValidatorFilm();
 
     public void like(Long filmId, Long userId) {
         Film film = filmStorage.getFilmById(filmId);
         userService.getUserStorage().getUserById(userId);
         if (film == null) {
-            throw new ObjectNotFoundException("Попытка доступа к несуществующему фильму с идентификатором '" + filmId + "'");
+            throw new ObjectNotFoundException("Попытка доступа к несуществующему фильму с идентификатором '" + filmId + "'.");
         }
         film.addLike(userId);
-        log.info("'{}' понравился фильм '{}'", userId, filmId);
+        log.info("'{}' понравился фильм '{}'.", userId, filmId);
     }
 
     public void dislike(Long filmId, Long userId) {
         Film film = filmStorage.getFilmById(filmId);
         userService.getUserStorage().getUserById(userId);
         if (film == null) {
-            throw new ObjectNotFoundException("Попытка доступа к несуществующему фильму с идентификатором '" + filmId + "'");
+            throw new ObjectNotFoundException("Попытка доступа к несуществующему фильму с идентификатором '" + filmId + "'.");
         }
         film.removeLike(userId);
-        log.info("'{}' disliked a movie '{}'", userId, filmId);
+        log.info("'{}' не понравился фильм '{}'.", userId, filmId);
     }
 
     public List<Film> getPopularMovies(int count) {
-        log.info("Попытайтесь получить список самых понравившихся фильмов");
-        return filmStorage.getFilms().stream()
-                .sorted(Comparator.comparingInt(Film::getLikesQuantity).reversed())
-                .limit(count).collect(Collectors.toList());
+        return filmStorage.getPopularMovies(count);
+    }
+
+    public Film createFilm(Film film) {
+        validatorFilm.validate(film);
+        return filmStorage.createFilm(film);
+    }
+
+    public List<Film> getFilms() {
+        return filmStorage.getFilms();
+    }
+
+    public Film updateFilm(Film film) {
+        validatorFilm.validate(film);
+        return filmStorage.updateFilm(film);
     }
 }
