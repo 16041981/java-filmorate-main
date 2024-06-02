@@ -4,6 +4,7 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -12,8 +13,11 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode(of = "id")
 public class Film {
 
+    private Set<Genre> genres;
+    private МРА mpa;
     @PositiveOrZero
     private Long id;
     @NotBlank
