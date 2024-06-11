@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dal.UserRepository;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import ru.yandex.practicum.filmorate.validator.ValidatorUser;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    private final UserRepository userRepository;
     private final UserStorage userStorage;
 
     ValidatorUser validatorUser = new ValidatorUser();
@@ -66,7 +68,7 @@ public class UserService {
     }
 
     public List<User> getUsers() {
-        return userStorage.getUsers();
+        return userRepository.getUsers();
     }
 
     public User updateUser(User user) {

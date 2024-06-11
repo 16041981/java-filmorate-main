@@ -29,6 +29,10 @@ public class User {
     private LocalDate birthday;
     private Set<Long> friends;
 
+    public User() {
+
+    }
+
     public void addFriend(Long id) {
         friends.add(id);
     }

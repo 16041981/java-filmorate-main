@@ -17,7 +17,7 @@ import java.util.Set;
 public class Film {
 
     private Set<Genre> genres;
-    private МРА mpa;
+    private Mpa mpa;
     @PositiveOrZero
     private Long id;
     @NotBlank
@@ -29,6 +29,10 @@ public class Film {
     @Positive
     private long duration;
     private Set<Long> likes;
+
+    public Film() {
+
+    }
 
     public void addLike(Long userId) {
         likes.add(userId);
