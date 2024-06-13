@@ -1,22 +1,23 @@
 package ru.yandex.practicum.filmorate.model;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 
-@Data
-@AllArgsConstructor
-@Builder
+
 @EqualsAndHashCode(of = "id")
+@Data
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Film {
 
-    private Set<Genre> genres;
+    private Collection<Genre> genres = new ArrayList<>();
     private Mpa mpa;
     @PositiveOrZero
     private Long id;
@@ -28,21 +29,6 @@ public class Film {
     private LocalDate releaseDate;
     @Positive
     private long duration;
+    private int rate;
     private Set<Long> likes;
-
-    public Film() {
-
-    }
-
-    public void addLike(Long userId) {
-        likes.add(userId);
-    }
-
-    public void removeLike(Long userId) {
-        likes.remove(userId);
-    }
-
-    public int getLikesQuantity() {
-        return likes.size();
-    }
 }
