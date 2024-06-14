@@ -10,7 +10,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.validator.ValidatorFilm;
 
 import java.util.Collection;
-import java.util.List;
 
 @Slf4j
 @Service
