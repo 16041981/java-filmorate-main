@@ -8,7 +8,7 @@ import java.util.List;
 
 @Component
 @Qualifier("FilmDbStorage")
-public class UserDbStorage implements UserStorage{
+public class UserDbStorage implements UserStorage {
     @Override
     public User createUser(User user) {
         return null;
