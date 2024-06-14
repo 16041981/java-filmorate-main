@@ -19,22 +19,24 @@ public class FilmService {
     private final FilmStorage filmStorage;
     private final UserService userService;
     private final LikeService likeService;
+    ValidatorFilm validatorFilm = new ValidatorFilm();
 
-    public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage, UserService userService, LikeService likeService) {
+
+    public FilmService(FilmStorage filmStorage, UserService userService, LikeService likeService) {
         this.filmStorage = filmStorage;
         this.userService = userService;
         this.likeService = likeService;
     }
 
     public Film createFilm(Film film) {
+        validatorFilm.validate(film);
         return filmStorage.createFilm(film);
     }
 
     public Film updateFilm(Film film) {
-        Film filmFromBD = filmStorage.getFilmById(film.getId());
-
-        checkFilmIsNotFound(filmFromBD, film.getId());
-
+        if (filmStorage.getFilmById(film.getId()) == null) {
+            throw new ObjectNotFoundException("Такого фильма в коллекции не существует.");
+        }
         return filmStorage.updateFilm(film);
     }
 
@@ -59,14 +61,9 @@ public class FilmService {
     public Film getFilmById(Long id) {
         Film film = filmStorage.getFilmById(id);
 
-        checkFilmIsNotFound(film, id);
+        //checkFilmIsNotFound(film, id);
 
         return film;
     }
 
-    private void checkFilmIsNotFound(Film film, Long id) {
-        if (ValidatorFilm.isFilmNull(film)) {
-            throw new ObjectNotFoundException(String.format(NOT_FOUND_FILM, id));
-        }
-    }
 }

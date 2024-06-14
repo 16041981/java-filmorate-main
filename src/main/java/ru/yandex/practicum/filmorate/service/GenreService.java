@@ -15,7 +15,7 @@ public class GenreService {
     private static final String NOT_FOUND_MESSAGE = "Жанра с id %s нет";
     private final GenreStorage genreStorage;
 
-    public GenreService(@Qualifier("GenreDbStorage") GenreStorage genreStorage) {
+    public GenreService(GenreStorage genreStorage) {
         this.genreStorage = genreStorage;
     }
 

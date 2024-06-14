@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -26,7 +27,7 @@ public class UserController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<User> getUsers() {
+    public Collection<User> getUsers() {
         log.info("Запрос списка пользователей.");
         return userService.getUsers();
     }
@@ -56,13 +57,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends")
-    public List<User> getFriends(@PathVariable Long id) {
+    public Collection<User> getFriends(@PathVariable Long id) {
         log.info("Запрос списка друзей.");
         return userService.getFriends(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId) {
+    public Collection<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId) {
         log.info("Запрос списка общих друзей.");
         return userService.getCommonFriends(id, otherId);
     }

@@ -40,6 +40,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film createFilm(Film film) {
+
         final String sql = "insert into films (name, release_date, description, duration, rate) " +
                 "values (?, ?, ?, ?, ?)";
 

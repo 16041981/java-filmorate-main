@@ -9,7 +9,7 @@ public class LikeService {
 
     private final LikeStorage likeStorage;
 
-    public LikeService(@Qualifier("LikeDbStorage") LikeStorage likeStorage) {
+    public LikeService(LikeStorage likeStorage) {
         this.likeStorage = likeStorage;
     }
 
