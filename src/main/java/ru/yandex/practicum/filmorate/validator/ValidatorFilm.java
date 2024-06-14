@@ -31,6 +31,7 @@ public class ValidatorFilm {
             film.setLikes(new HashSet<>());
         }
     }
+
     public static boolean isFilmNull(Film film) {
         return Objects.isNull(film);
     }
