@@ -67,4 +67,13 @@ public class FilmService {
     public Collection<Film> getPopularMovies(Integer count) {
         return filmStorage.getPopularMovies(count);
     }
+
+    public Film getFilmById(Long id) {
+        Film film = filmStorage.getFilmById(id);
+
+        //checkFilmIsNotFound(film, id);
+
+        return film;
+    }
+
 }

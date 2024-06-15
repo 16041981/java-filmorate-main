@@ -22,7 +22,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse InternalServiceException(final InternalServiceException exception) {
+    public ErrorResponse internalServiceException(final InternalServiceException exception) {
         return new ErrorResponse(exception.getMessage());
     }
 }
