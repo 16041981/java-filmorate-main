@@ -30,6 +30,9 @@ public class ValidatorFilm {
         if (film.getLikes() == null) {
             film.setLikes(new HashSet<>());
         }
+        if (film.getMpa() == null) {
+            throw new ValidationException("Дата релиза — не раньше 28 декабря 1895 года.");
+        }
     }
 
     public static boolean isFilmNull(Film film) {

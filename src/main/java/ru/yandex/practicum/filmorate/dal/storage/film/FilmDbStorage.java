@@ -80,9 +80,13 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Collection<Film> getAllFilms() {
-        Collection<Film> films = jdbc.query(filmsSql, mapper);
-
-        return setFilmGenres(films);
+//        Collection<Film> films = jdbc.query(filmsSql, mapper);
+//
+//        return setFilmGenres(films);
+        List<Film> films = jdbc.query(
+                "SELECT film_id, name, description, release_date, duration, mpa_id FROM films", mapper);
+        //log.trace("There are movies in the data base: {}", films);
+        return films;
     }
 
     @Override
