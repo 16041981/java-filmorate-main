@@ -25,5 +25,4 @@ public class ErrorHandler {
     public ErrorResponse InternalServiceException(final InternalServiceException exception) {
         return new ErrorResponse(exception.getMessage());
     }
-
 }
