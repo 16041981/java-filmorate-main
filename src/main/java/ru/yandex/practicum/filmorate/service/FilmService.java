@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dal.storage.genre.GenreDbStorage;
 import ru.yandex.practicum.filmorate.dal.storage.mpa.MpaDbStorage;
@@ -11,7 +10,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.dal.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.validator.ValidatorFilm;
-import ru.yandex.practicum.filmorate.validator.ValidatorMpa;
 
 import java.util.Collection;
 
@@ -42,9 +40,6 @@ public class FilmService {
         if (film.getMpa().getId() > 5) {
             throw new ValidationException("Такого Mpa нет.");
         }
-//        if (film.getGenres() != null) {
-//            throw new ValidationException("Что-то не так с жанром фильма.");
-//        }
         return filmStorage.createFilm(film);
     }
 
@@ -72,13 +67,4 @@ public class FilmService {
     public Collection<Film> getPopularMovies(Integer count) {
         return filmStorage.getPopularMovies(count);
     }
-
-    public Film getFilmById(Long id) {
-        Film film = filmStorage.getFilmById(id);
-
-        //checkFilmIsNotFound(film, id);
-
-        return film;
-    }
-
 }

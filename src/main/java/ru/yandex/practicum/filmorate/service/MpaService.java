@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dal.storage.mpa.MpaStorage;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
@@ -15,7 +14,7 @@ public class MpaService {
     private static final String NOT_FOUND_MESSAGE = "MPA рейтинга с id %s нет";
     private final MpaStorage mpaStorage;
 
-    public MpaService(@Qualifier("MpaDbStorage") MpaStorage mpaStorage) {
+    public MpaService(MpaStorage mpaStorage) {
         this.mpaStorage = mpaStorage;
     }
 

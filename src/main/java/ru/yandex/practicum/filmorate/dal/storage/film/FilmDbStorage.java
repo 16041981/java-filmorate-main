@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.dal.storage.film;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -18,7 +17,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-@Qualifier("FilmDbStorage")
 public class FilmDbStorage implements FilmStorage {
 
     private final FilmRowMapper mapper;
@@ -80,13 +78,9 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Collection<Film> getAllFilms() {
-//        Collection<Film> films = jdbc.query(filmsSql, mapper);
-//
-//        return setFilmGenres(films);
-        List<Film> films = jdbc.query(
-                "SELECT film_id, name, description, release_date, duration, mpa_id FROM films", mapper);
-        //log.trace("There are movies in the data base: {}", films);
-        return films;
+        Collection<Film> films = jdbc.query(filmsSql, mapper);
+
+        return setFilmGenres(films);
     }
 
     @Override
