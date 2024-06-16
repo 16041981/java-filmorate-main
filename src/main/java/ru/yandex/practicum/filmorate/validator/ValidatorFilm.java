@@ -34,4 +34,8 @@ public class ValidatorFilm {
             throw new ValidationException("Дата релиза — не раньше 28 декабря 1895 года.");
         }
     }
+
+    public static boolean isFilmNull(Film film) {
+        return Objects.isNull(film);
+    }
 }
