@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.Objects;
 
 @Slf4j
 public class ValidatorFilm {
@@ -35,7 +34,4 @@ public class ValidatorFilm {
         }
     }
 
-    public static boolean isFilmNull(Film film) {
-        return Objects.isNull(film);
-    }
 }
