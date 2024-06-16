@@ -2,9 +2,6 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.controller.GenreController;
-import ru.yandex.practicum.filmorate.dal.storage.genre.GenreDbStorage;
-import ru.yandex.practicum.filmorate.dal.storage.mpa.MpaDbStorage;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -14,7 +11,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.validator.ValidatorFilm;
 
 import java.util.Collection;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -24,19 +20,17 @@ public class FilmService {
     private final UserService userService;
     private final LikeService likeService;
     private final GenreService genreService;
-    private final MpaService mpaService;
 
     ValidatorFilm validatorFilm = new ValidatorFilm();
 
 
 
     public FilmService(FilmStorage filmStorage, UserService userService, LikeService likeService,
-                       GenreService genreService, MpaService mpaService) {
+                       GenreService genreService) {
         this.filmStorage = filmStorage;
         this.userService = userService;
         this.likeService = likeService;
         this.genreService = genreService;
-        this.mpaService = mpaService;
     }
 
     public Film createFilm(Film film) {
