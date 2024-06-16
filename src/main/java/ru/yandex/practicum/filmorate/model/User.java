@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Data
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 public class User {
     @PositiveOrZero
     private Integer id;
