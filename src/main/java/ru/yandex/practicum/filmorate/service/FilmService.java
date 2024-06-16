@@ -60,11 +60,11 @@ public class FilmService {
         return filmStorage.getAllFilms();
     }
 
-    public void like(Long filmId, Long userId) {
+    public void like(Integer filmId, Integer userId) {
         likeService.addLikeToFilm(filmId, userId);
     }
 
-    public void dislike(Long filmId, Long userId) {
+    public void dislike(Integer filmId, Integer userId) {
         User user = userService.getUserById(userId);
 
         likeService.deleteLikeFromFilm(filmId, user.getId());

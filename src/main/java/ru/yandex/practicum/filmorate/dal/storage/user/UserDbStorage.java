@@ -41,7 +41,7 @@ public class UserDbStorage implements UserStorage {
             return preparedStatement;
         }, generatedKeyHolder);
 
-        Long userId = Objects.requireNonNull(generatedKeyHolder.getKey()).longValue();
+        Integer userId = Objects.requireNonNull(generatedKeyHolder.getKey()).intValue();
 
         user.setId(userId);
 
@@ -49,7 +49,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User getUserById(Long userId) {
+    public User getUserById(Integer userId) {
         try {
             return jdbc.queryForObject(usersSql.concat(" where id = ?"), mapper, userId);
         } catch (Exception e) {
@@ -75,7 +75,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public Collection<User> getUserFriends(Long userId) {
+    public Collection<User> getUserFriends(Integer userId) {
         final String sql = "select * from users where id in (select f.friend_id from users u join friendships f " +
                 "on u.id = f.user_id where u.id = ?)";
 
@@ -83,7 +83,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public Collection<User> getCommonFriends(Long user1Id, Long user2Id) {
+    public Collection<User> getCommonFriends(Integer user1Id, Integer user2Id) {
         final String sql = "select * from users where id in (select friend_id from users u join friendships f on " +
                 "u.id = f.user_id where u.id = ?) and id in (select friend_id from users u join friendships f on " +
                 "u.id = f.user_id where u.id = ?)";

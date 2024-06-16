@@ -20,7 +20,7 @@ public class Film {
     private Collection<Genre> genres = new ArrayList<>();
     private Mpa mpa;
     @PositiveOrZero
-    private Long id;
+    private Integer id;
     @NotBlank
     private String name;
     @NotNull
@@ -30,5 +30,5 @@ public class Film {
     @Positive
     private long duration;
     private int rate;
-    private Set<Long> likes;
+    private Set<Integer> likes;
 }

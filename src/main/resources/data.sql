@@ -1,17 +1,12 @@
-INSERT INTO film_mpa (mpa_id, mpa_rating)
-            VALUES (1, 'G');
-INSERT INTO film_mpa (mpa_id, mpa_rating)
-            VALUES (2, 'PG');
-INSERT INTO film_mpa (mpa_id, mpa_rating)
-            VALUES (3, 'PG-13');
-INSERT INTO film_mpa (mpa_id, mpa_rating)
-            VALUES (4, 'R');
-INSERT INTO film_mpa (mpa_id, mpa_rating)
-            VALUES (5, 'NC-17');
+insert into mpas (name) values ('G');
+insert into mpas (name) values ('PG');
+insert into mpas (name) values ('PG-13');
+insert into mpas (name) values ('R');
+insert into mpas (name) values ('NC-17');
 
-INSERT INTO genre (genre_type) VALUES ('Комедия');
-INSERT INTO genre (genre_type) VALUES ('Драма');
-INSERT INTO genre (genre_type) VALUES ('Мультфильм');
-INSERT INTO genre (genre_type) VALUES ('Триллер');
-INSERT INTO genre (genre_type) VALUES ('Документальный');
-INSERT INTO genre (genre_type) VALUES ('Боевик');
+insert into genres (name) values ('Комедия');
+insert into genres (name) values ('Драма');
+insert into genres (name) values ('Мультфильм');
+insert into genres (name) values ('Триллер');
+insert into genres (name) values ('Документальный');
+insert into genres (name) values ('Боевик');

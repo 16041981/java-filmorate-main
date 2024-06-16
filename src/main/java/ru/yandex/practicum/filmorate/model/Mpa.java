@@ -8,7 +8,7 @@ import lombok.*;
 //@EqualsAndHashCode(of = "id")
 public class Mpa {
     @NonNull
-    private Long id;
+    private Integer id;
     @NonNull
     private String name;
 

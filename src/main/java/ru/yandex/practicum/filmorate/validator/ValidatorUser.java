@@ -8,10 +8,10 @@ import java.util.HashSet;
 @Slf4j
 public class ValidatorUser {
 
-    private Long id;
+    private Integer id;
 
     public ValidatorUser() {
-        this.id = 0L;
+        this.id = 0;
     }
 
     public void validate(User user) {

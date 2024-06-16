@@ -56,7 +56,7 @@ public class FilmDbStorage implements FilmStorage {
             return preparedStatement;
         }, generatedKeyHolder);
 
-        long filmId = Objects.requireNonNull(generatedKeyHolder.getKey()).intValue();
+        Integer filmId = Objects.requireNonNull(generatedKeyHolder.getKey()).intValue();
 
         film.setId(filmId);
 
@@ -119,8 +119,8 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private Film addMpaAndGenres(Film film) {
-        Long filmId = film.getId();
-        Long mpaId = film.getMpa().getId();
+        Integer filmId = film.getId();
+        Integer mpaId = film.getMpa().getId();
 
         filmMpaStorage.addFilmMpa(filmId, mpaId);
         new LinkedHashSet<>(film.getGenres()).forEach(genre -> filmGenreStorage.addFilmGenre(filmId, genre.getId()));

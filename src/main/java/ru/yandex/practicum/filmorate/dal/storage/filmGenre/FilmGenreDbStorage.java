@@ -53,7 +53,7 @@ public class FilmGenreDbStorage implements FilmGenreStorage {
         Collection<String> ids = films.stream().map(film -> String.valueOf(film.getId())).collect(Collectors.toList());
 
         jdbc.query(String.format(sql, String.join(",", ids)), (rs) -> {
-            Genre genre = new Genre(rs.getLong("genre_id"), rs.getString("name"));
+            Genre genre = new Genre(rs.getInt("genre_id"), rs.getString("name"));
 
             if (!filmGenresMap.containsKey(rs.getInt("film_id"))) {
                 filmGenresMap.put(rs.getInt("film_id"), new ArrayList<>());

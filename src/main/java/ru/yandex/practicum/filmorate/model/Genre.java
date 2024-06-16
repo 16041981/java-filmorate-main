@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 public class Genre {
     @NonNull
-    private Long id;
+    private Integer id;
     @NonNull
     private String name;
 }

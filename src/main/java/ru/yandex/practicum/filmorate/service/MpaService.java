@@ -16,7 +16,7 @@ public class MpaService {
     private static final String NOT_FOUND_MESSAGE = "MPA рейтинга с id %s нет";
     private final MpaStorage mpaStorage;
 
-    public Mpa getMapById(Long id) {
+    public Mpa getMapById(Integer id) {
 
         Mpa mpa = mpaStorage.getMpaById(id);
 
@@ -29,7 +29,7 @@ public class MpaService {
         return mpaStorage.getAllMpa();
     }
 
-    private void checkMpaIsNotNull(Mpa mpa, Long id) {
+    private void checkMpaIsNotNull(Mpa mpa, Integer id) {
         if (ValidatorMpa.isMpaNotFound(getAllMpa(), mpa)) {
             throw new ObjectNotFoundException(String.format(NOT_FOUND_MESSAGE, id));
         }

@@ -11,11 +11,11 @@ import java.util.Objects;
 @Slf4j
 public class ValidatorFilm {
 
-    private  Long id;
+    private  Integer id;
     private static final LocalDate birthdayFilm = LocalDate.of(1895, 12, 28);
 
     public ValidatorFilm() {
-        id = 0L;
+        id = 0;
     }
 
     public void validate(Film film) {

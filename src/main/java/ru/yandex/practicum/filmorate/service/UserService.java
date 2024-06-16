@@ -23,7 +23,7 @@ public class UserService {
     ValidatorUser validatorUser = new ValidatorUser();
 
 
-    public void addFriend(Long userId, Long friendId) {
+    public void addFriend(Integer userId, Integer friendId) {
         User user = userStorage.getUserById(userId);
         if (user == null || userStorage.getUserById(friendId) == null) {
             throw new ObjectNotFoundException("Пользователя с id: " + userId + " нет.");
@@ -32,7 +32,7 @@ public class UserService {
         log.info("'{}' добавлен '{}' в список друзей.", userId, friendId);
     }
 
-    public void deleteFriend(Long userId, Long friendId) {
+    public void deleteFriend(Integer userId, Integer friendId) {
         User user = userStorage.getUserById(userId);
         User user2 = userStorage.getUserById(friendId);
         if (user == null || user2 == null) {
@@ -43,7 +43,7 @@ public class UserService {
 
     }
 
-    public Collection<User> getCommonFriends(Long userId, Long friendId) {
+    public Collection<User> getCommonFriends(Integer userId, Integer friendId) {
         User user = userStorage.getUserById(userId);
         if (user == null) {
             throw new ObjectNotFoundException("Пользователя с id: " + userId + " нет.");
@@ -52,7 +52,7 @@ public class UserService {
         return userStorage.getCommonFriends(userId, friendId);
     }
 
-    public Collection<User> getFriends(Long userId) {
+    public Collection<User> getFriends(Integer userId) {
         User user = userStorage.getUserById(userId);
         if (user == null) {
             throw new ObjectNotFoundException("Пользователя с id: " + userId + " нет.");
@@ -81,7 +81,7 @@ public class UserService {
 
     }
 
-    public User getUserById(Long id) {
+    public User getUserById(Integer id) {
         return userStorage.getUserById(id);
     }
 }

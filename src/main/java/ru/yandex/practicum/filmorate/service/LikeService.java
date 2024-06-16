@@ -12,11 +12,11 @@ public class LikeService {
         this.likeStorage = likeStorage;
     }
 
-    public void addLikeToFilm(Long filmId, Long userId) {
+    public void addLikeToFilm(Integer filmId, Integer userId) {
         likeStorage.addLikeToFilm(filmId, userId);
     }
 
-    public void deleteLikeFromFilm(Long filmId, Long userId) {
+    public void deleteLikeFromFilm(Integer filmId, Integer userId) {
         likeStorage.deleteLikeFromFilm(filmId, userId);
     }
 }

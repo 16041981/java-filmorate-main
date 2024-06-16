@@ -21,7 +21,7 @@ public class MpaDbStorage implements MpaStorage {
     private final String mpasSql = "select * from mpas";
 
     @Override
-    public Mpa getMpaById(Long mpaId) {
+    public Mpa getMpaById(Integer mpaId) {
         try {
             return jdbcTemplate.queryForObject(mpasSql.concat(" where id = ?"), mapper, mpaId);
         } catch (Exception e) {
