@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dal.storage.mpa.MpaStorage;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
@@ -9,16 +10,14 @@ import ru.yandex.practicum.filmorate.validator.ValidatorMpa;
 import java.util.Collection;
 
 @Service
+@RequiredArgsConstructor
 public class MpaService {
 
     private static final String NOT_FOUND_MESSAGE = "MPA рейтинга с id %s нет";
     private final MpaStorage mpaStorage;
 
-    public MpaService(MpaStorage mpaStorage) {
-        this.mpaStorage = mpaStorage;
-    }
-
     public Mpa getMapById(Long id) {
+
         Mpa mpa = mpaStorage.getMpaById(id);
 
         checkMpaIsNotNull(mpa, id);

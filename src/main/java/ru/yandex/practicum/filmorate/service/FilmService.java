@@ -2,43 +2,55 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.controller.GenreController;
 import ru.yandex.practicum.filmorate.dal.storage.genre.GenreDbStorage;
 import ru.yandex.practicum.filmorate.dal.storage.mpa.MpaDbStorage;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.dal.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.validator.ValidatorFilm;
 
 import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @Service
 public class FilmService {
 
-    private static final String NOT_FOUND_FILM = "фильма с id %s нет";
     private final FilmStorage filmStorage;
     private final UserService userService;
     private final LikeService likeService;
-    private final MpaDbStorage mpaDbStorage;
-    private final GenreDbStorage genreDbStorage;
+    private final GenreService genreService;
+    private final MpaService mpaService;
+
     ValidatorFilm validatorFilm = new ValidatorFilm();
 
 
 
-    public FilmService(FilmStorage filmStorage, UserService userService, LikeService likeService, MpaDbStorage mpaDbStorage, GenreDbStorage genreDbStorage) {
+    public FilmService(FilmStorage filmStorage, UserService userService, LikeService likeService,
+                       GenreService genreService, MpaService mpaService) {
         this.filmStorage = filmStorage;
         this.userService = userService;
         this.likeService = likeService;
-        this.mpaDbStorage = mpaDbStorage;
-        this.genreDbStorage = genreDbStorage;
+        this.genreService = genreService;
+        this.mpaService = mpaService;
     }
 
     public Film createFilm(Film film) {
         validatorFilm.validate(film);
         if (film.getMpa().getId() > 5) {
             throw new ValidationException("Такого Mpa нет.");
+        }
+        Collection<Genre> genres = film.getGenres();
+        if (genres != null) {
+            for (Genre genre : genres) {
+                if (genre.getId() > genreService.getAllGenres().size()) {
+                    throw new ValidationException("Такого Genre нет.");
+                }
+            }
         }
         return filmStorage.createFilm(film);
     }
@@ -69,11 +81,7 @@ public class FilmService {
     }
 
     public Film getFilmById(Long id) {
-        Film film = filmStorage.getFilmById(id);
-
-        //checkFilmIsNotFound(film, id);
-
-        return film;
+        return filmStorage.getFilmById(id);
     }
 
 }
