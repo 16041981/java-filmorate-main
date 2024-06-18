@@ -23,14 +23,14 @@ public class FilmGenreDbStorage implements FilmGenreStorage {
     }
 
     @Override
-    public void addFilmGenre(long filmId, long genreId) {
+    public void addFilmGenre(Integer filmId, Integer genreId) {
         final String sql = "insert into film_genres (film_id, genre_id) values (?, ?)";
 
         jdbc.update(sql, filmId, genreId);
     }
 
     @Override
-    public Collection<Genre> getAllFilmGenresById(long filmId) {
+    public Collection<Genre> getAllFilmGenresById(Integer filmId) {
         final String sql = "select g.id as id, name from film_genres fg left join genres g on " +
                 "fg.genre_id = g.id where film_id = ?";
 
@@ -38,7 +38,7 @@ public class FilmGenreDbStorage implements FilmGenreStorage {
     }
 
     @Override
-    public void deleteAllFilmGenresById(long filmId) {
+    public void deleteAllFilmGenresById(Integer filmId) {
         final String sql = "delete from film_genres where film_id = ?";
 
         jdbc.update(sql, filmId);

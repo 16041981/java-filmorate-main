@@ -19,21 +19,21 @@ public class FilmMpaDbStorage implements FilmMpaStorage {
     }
 
     @Override
-    public void addFilmMpa(long filmId, long mpaId) {
+    public void addFilmMpa(Integer filmId, Integer mpaId) {
         final String sql = "insert into film_mpas (film_id, mpa_id) values (?, ?)";
 
         jdbc.update(sql, filmId, mpaId);
     }
 
     @Override
-    public Mpa getFilmMpaById(long filmId) {
+    public Mpa getFilmMpaById(Integer filmId) {
         final String sql = "select m.id as id, name from film_mpas fm left join mpas m on fm.mpa_id = m.id where film_id = ?";
 
         return jdbc.queryForObject(sql, mapper, filmId);
     }
 
     @Override
-    public void deleteFilmMpaById(long filmId) {
+    public void deleteFilmMpaById(Integer filmId) {
         final String sql = "delete from film_mpas where film_id = ?";
 
         jdbc.update(sql, filmId);

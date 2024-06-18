@@ -7,11 +7,11 @@ import java.util.Collection;
 import java.util.Map;
 
 public interface FilmGenreStorage {
-    void addFilmGenre(long filmId, long genreId);
+    void addFilmGenre(Integer filmId, Integer genreId);
 
-    Collection<Genre> getAllFilmGenresById(long filmId);
+    Collection<Genre> getAllFilmGenresById(Integer filmId);
 
-    void deleteAllFilmGenresById(long filmId);
+    void deleteAllFilmGenresById(Integer filmId);
 
     Map<Integer, Collection<Genre>> getAllFilmGenres(Collection<Film> films);
 }

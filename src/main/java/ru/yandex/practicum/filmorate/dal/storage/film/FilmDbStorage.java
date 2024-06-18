@@ -64,7 +64,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Film getFilmById(long filmId) {
+    public Film getFilmById(Integer filmId) {
         List<Film> films = jdbc.query(filmsSql.concat(" where f.id = ?"), mapper, filmId);
 
         if (!films.isEmpty()) {

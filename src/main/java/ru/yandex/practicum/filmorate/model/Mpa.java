@@ -5,7 +5,6 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-//@EqualsAndHashCode(of = "id")
 public class Mpa {
     @NonNull
     private Integer id;

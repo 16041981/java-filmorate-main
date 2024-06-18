@@ -74,7 +74,7 @@ public class FilmService {
         return filmStorage.getPopularMovies(count);
     }
 
-    public Film getFilmById(Long id) {
+    public Film getFilmById(Integer id) {
         return filmStorage.getFilmById(id);
     }
 

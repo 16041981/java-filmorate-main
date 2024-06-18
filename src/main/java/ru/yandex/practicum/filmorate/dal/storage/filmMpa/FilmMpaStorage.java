@@ -4,9 +4,9 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 
 public interface FilmMpaStorage {
 
-    void addFilmMpa(long filmId, long mpaId);
+void addFilmMpa(Integer filmId, Integer mpaId);
 
-    Mpa getFilmMpaById(long filmId);
+Mpa getFilmMpaById(Integer filmId);
 
-    void deleteFilmMpaById(long filmId);
+void deleteFilmMpaById(Integer filmId);
 }
