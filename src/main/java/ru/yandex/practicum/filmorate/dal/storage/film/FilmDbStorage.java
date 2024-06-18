@@ -1,11 +1,11 @@
 package ru.yandex.practicum.filmorate.dal.storage.film;
 
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.StopWatch;
 import ru.yandex.practicum.filmorate.dal.mappers.FilmRowMapper;
 import ru.yandex.practicum.filmorate.dal.storage.filmGenre.FilmGenreStorage;
@@ -20,8 +20,8 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
-@Qualifier("FilmDbStorage")
+@Repository
+@RequiredArgsConstructor
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
@@ -30,14 +30,6 @@ public class FilmDbStorage implements FilmStorage {
     private final FilmGenreStorage filmGenreStorage;
     private final String filmsSql = "select f.*, m.id as mpa_id, m.name as mpa_name from films f left join film_mpas fm on f.id = fm.film_id " +
             "left join mpas m on fm.mpa_id = m.id";
-
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, FilmMpaStorage filmMpaStorage, MpaStorage mpaStorage,
-                         FilmGenreStorage filmGenreStorage) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.filmMpaStorage = filmMpaStorage;
-        this.mpaStorage = mpaStorage;
-        this.filmGenreStorage = filmGenreStorage;
-    }
 
     @Override
     public Film createFilm(Film film) {
@@ -67,6 +59,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film getFilmById(Integer filmId) {
+
         List<Film> films = jdbcTemplate.query(filmsSql.concat(" where f.id = ?"), new FilmRowMapper(), filmId);
 
         if (!films.isEmpty()) {
@@ -125,24 +118,25 @@ public class FilmDbStorage implements FilmStorage {
         int mpaId = film.getMpa().getId();
 
         filmMpaStorage.addFilmMpa(filmId, mpaId);
+        new LinkedHashSet<>(film.getGenres()).forEach(genre -> filmGenreStorage.addFilmGenre(filmId, genre.getId()));
 
-        List<Genre> genres = (List<Genre>) film.getGenres();
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-        jdbcTemplate.batchUpdate("insert into film_genres (film_id, genre_id) values (?, ?)",
-                new BatchPreparedStatementSetter() {
-                    @Override
-                    public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
-                        preparedStatement.setInt(1, film.getId());
-                        preparedStatement.setInt(2, genres.get(i).getId());
-                    }
-
-                    @Override
-                    public int getBatchSize() {
-                        return genres.size();
-                    }
-                });
-        stopWatch.stop();
+//        List<Genre> genres = (List<Genre>) film.getGenres();
+//        StopWatch stopWatch = new StopWatch();
+//        stopWatch.start();
+//        jdbcTemplate.batchUpdate("insert into film_genres (film_id, genre_id) values (?, ?)",
+//                new BatchPreparedStatementSetter() {
+//                    @Override
+//                    public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
+//                        preparedStatement.setInt(1, film.getId());
+//                        preparedStatement.setInt(2, genres.get(i).getId());
+//                    }
+//
+//                    @Override
+//                    public int getBatchSize() {
+//                        return genres.size();
+//                    }
+//                });
+//        stopWatch.stop();
 
         Mpa filmMpa = mpaStorage.getMpaById(mpaId);
         Collection<Genre> filmGenres = filmGenreStorage.getAllFilmGenresById(filmId);
