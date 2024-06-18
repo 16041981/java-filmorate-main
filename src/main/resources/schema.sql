@@ -49,11 +49,8 @@ create table if not exists likes
 
 create table if not exists film_genres
 (
-    film_id  int,
-    genre_id int,
-    foreign key (film_id) references films (id) on delete cascade,
-    foreign key (genre_id) references genres (id) on delete cascade,
-    primary key (film_id, genre_id)
+    film_id int not null,
+    genre_id int
 );
 
 create table if not exists film_mpas
