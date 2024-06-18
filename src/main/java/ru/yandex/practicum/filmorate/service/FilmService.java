@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -16,6 +17,7 @@ import java.util.Collection;
 @Service
 public class FilmService {
 
+    private static final String NOT_FOUND_FILM = "фильма с id %s нет";
     private final FilmStorage filmStorage;
     private final UserService userService;
     private final LikeService likeService;
@@ -23,10 +25,7 @@ public class FilmService {
 
     ValidatorFilm validatorFilm = new ValidatorFilm();
 
-
-
-    public FilmService(FilmStorage filmStorage, UserService userService, LikeService likeService,
-                       GenreService genreService) {
+    public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage, UserService userService, LikeService likeService, GenreService genreService) {
         this.filmStorage = filmStorage;
         this.userService = userService;
         this.likeService = likeService;
@@ -50,9 +49,11 @@ public class FilmService {
     }
 
     public Film updateFilm(Film film) {
+
         if (filmStorage.getFilmById(film.getId()) == null) {
             throw new ObjectNotFoundException("Такого фильма в коллекции не существует.");
         }
+
         return filmStorage.updateFilm(film);
     }
 
@@ -60,22 +61,25 @@ public class FilmService {
         return filmStorage.getAllFilms();
     }
 
-    public void like(Integer filmId, Integer userId) {
+    public void addLikeToFilm(Integer filmId, Integer userId) {
         likeService.addLikeToFilm(filmId, userId);
     }
 
-    public void dislike(Integer filmId, Integer userId) {
+    public void deleteLikeFromFilm(Integer filmId, Integer userId) {
         User user = userService.getUserById(userId);
 
         likeService.deleteLikeFromFilm(filmId, user.getId());
     }
 
-    public Collection<Film> getPopularMovies(Integer count) {
-        return filmStorage.getPopularMovies(count);
+    public Collection<Film> getPopularFilms(Integer count) {
+        return filmStorage.getPopularFilms(count);
     }
 
     public Film getFilmById(Integer id) {
-        return filmStorage.getFilmById(id);
-    }
+        Film film = filmStorage.getFilmById(id);
 
+        validatorFilm.validate(film);
+
+        return film;
+    }
 }

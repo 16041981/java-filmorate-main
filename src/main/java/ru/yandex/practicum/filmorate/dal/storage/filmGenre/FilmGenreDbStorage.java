@@ -14,19 +14,17 @@ import java.util.stream.Collectors;
 @Qualifier("FilmGenreDbStorage")
 public class FilmGenreDbStorage implements FilmGenreStorage {
 
-    private final JdbcTemplate jdbc;
-    private final GenreRowMapper mapper;
+    private final JdbcTemplate jdbcTemplate;
 
-    public FilmGenreDbStorage(JdbcTemplate jdbc, GenreRowMapper mapper) {
-        this.jdbc = jdbc;
-        this.mapper = mapper;
+    public FilmGenreDbStorage(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
     public void addFilmGenre(Integer filmId, Integer genreId) {
         final String sql = "insert into film_genres (film_id, genre_id) values (?, ?)";
 
-        jdbc.update(sql, filmId, genreId);
+        jdbcTemplate.update(sql, filmId, genreId);
     }
 
     @Override
@@ -34,14 +32,14 @@ public class FilmGenreDbStorage implements FilmGenreStorage {
         final String sql = "select g.id as id, name from film_genres fg left join genres g on " +
                 "fg.genre_id = g.id where film_id = ?";
 
-        return jdbc.query(sql, mapper, filmId);
+        return jdbcTemplate.query(sql, new GenreRowMapper(), filmId);
     }
 
     @Override
     public void deleteAllFilmGenresById(Integer filmId) {
         final String sql = "delete from film_genres where film_id = ?";
 
-        jdbc.update(sql, filmId);
+        jdbcTemplate.update(sql, filmId);
     }
 
     @Override
@@ -52,7 +50,7 @@ public class FilmGenreDbStorage implements FilmGenreStorage {
         Map<Integer, Collection<Genre>> filmGenresMap = new HashMap<>();
         Collection<String> ids = films.stream().map(film -> String.valueOf(film.getId())).collect(Collectors.toList());
 
-        jdbc.query(String.format(sql, String.join(",", ids)), (rs) -> {
+        jdbcTemplate.query(String.format(sql, String.join(",", ids)), (rs) -> {
             Genre genre = new Genre(rs.getInt("genre_id"), rs.getString("name"));
 
             if (!filmGenresMap.containsKey(rs.getInt("film_id"))) {

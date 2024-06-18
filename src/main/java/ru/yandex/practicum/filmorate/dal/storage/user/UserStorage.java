@@ -8,12 +8,11 @@ public interface UserStorage {
 
     User createUser(User user);
 
-    Collection<User> getUsers();
+    User getUserById(Integer id);
+
+    Collection<User> getAllUsers();
 
     User updateUser(User user);
-
-
-    User getUserById(Integer id);
 
     Collection<User> getUserFriends(Integer userId);
 

@@ -1,30 +1,20 @@
 package ru.yandex.practicum.filmorate.validator;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.experimental.UtilityClass;
+
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.HashSet;
+import java.util.Objects;
 
-@Slf4j
+@UtilityClass
 public class ValidatorUser {
 
-    private Integer id;
-
-    public ValidatorUser() {
-        this.id = 0;
+    public static boolean isUserNotFound(User user) {
+        return Objects.isNull(user);
     }
 
-    public void validate(User user) {
-        if (user.getId() == null || user.getId() <= 0) {
-            user.setId(++id);
-            log.info("Некорректно указан id.");
-        }
-        if (user.getName() == null) {
-            user.setName(user.getLogin());
-            log.info("Имя для отображения может быть пустым — в таком случае будет использован логин.");
-        }
-        if (user.getFriends() == null) {
-            user.setFriends(new HashSet<>());
-        }
+    public static boolean isUserNameValid(String userName) {
+        return Objects.nonNull(userName) && !userName.isEmpty() && !userName.isBlank();
     }
 }

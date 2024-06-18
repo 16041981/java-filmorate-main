@@ -16,13 +16,12 @@ import java.util.Objects;
 @Qualifier("UserDbStorage")
 public class UserDbStorage implements UserStorage {
 
-    private final JdbcTemplate jdbc;
-    private final UserRowMapper mapper;
+    private final JdbcTemplate jdbcTemplate;
     private final String usersSql = "select * from users";
 
-    public UserDbStorage(JdbcTemplate jdbc, UserRowMapper mapper) {
-        this.jdbc = jdbc;
-        this.mapper = mapper;
+    public UserDbStorage(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+
     }
 
     @Override
@@ -30,7 +29,7 @@ public class UserDbStorage implements UserStorage {
         final String sql = "insert into users (name, login, birthday, email) values (?, ?, ?, ?)";
         KeyHolder generatedKeyHolder = new GeneratedKeyHolder();
 
-        jdbc.update(connection -> {
+        jdbcTemplate.update(connection -> {
             PreparedStatement preparedStatement = connection.prepareStatement(sql,
                     new String[]{"id"});
             preparedStatement.setString(1, user.getName());
@@ -41,7 +40,7 @@ public class UserDbStorage implements UserStorage {
             return preparedStatement;
         }, generatedKeyHolder);
 
-        Integer userId = Objects.requireNonNull(generatedKeyHolder.getKey()).intValue();
+        int userId = Objects.requireNonNull(generatedKeyHolder.getKey()).intValue();
 
         user.setId(userId);
 
@@ -51,22 +50,22 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User getUserById(Integer userId) {
         try {
-            return jdbc.queryForObject(usersSql.concat(" where id = ?"), mapper, userId);
+            return jdbcTemplate.queryForObject(usersSql.concat(" where id = ?"), new UserRowMapper(), userId);
         } catch (Exception e) {
             return null;
         }
     }
 
     @Override
-    public Collection<User> getUsers() {
-        return jdbc.query(usersSql, mapper);
+    public Collection<User> getAllUsers() {
+        return jdbcTemplate.query(usersSql, new UserRowMapper());
     }
 
     @Override
     public User updateUser(User user) {
         final String sql = "update users set name = ?, login = ?, birthday = ?, email = ? where id = ?";
 
-        jdbc.update(
+        jdbcTemplate.update(
                 sql,
                 user.getName(), user.getLogin(), user.getBirthday(), user.getEmail(), user.getId()
         );
@@ -79,7 +78,7 @@ public class UserDbStorage implements UserStorage {
         final String sql = "select * from users where id in (select f.friend_id from users u join friendships f " +
                 "on u.id = f.user_id where u.id = ?)";
 
-        return jdbc.query(sql, mapper, userId);
+        return jdbcTemplate.query(sql, new UserRowMapper(), userId);
     }
 
     @Override
@@ -88,6 +87,6 @@ public class UserDbStorage implements UserStorage {
                 "u.id = f.user_id where u.id = ?) and id in (select friend_id from users u join friendships f on " +
                 "u.id = f.user_id where u.id = ?)";
 
-        return jdbc.query(sql, mapper, user1Id, user2Id);
+        return jdbcTemplate.query(sql, new UserRowMapper(), user1Id, user2Id);
     }
 }

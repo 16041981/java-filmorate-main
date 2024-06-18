@@ -12,19 +12,17 @@ import java.util.Collection;
 @Qualifier("GenreDbStorage")
 public class GenreDbStorage implements GenreStorage {
 
-    private final JdbcTemplate jdbc;
-    private final GenreRowMapper mapper;
+    private final JdbcTemplate jdbcTemplate;
     private final String genresSql = "select * from genres";
 
-    public GenreDbStorage(JdbcTemplate jdbc, GenreRowMapper mapper) {
-        this.jdbc = jdbc;
-        this.mapper = mapper;
+    public GenreDbStorage(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
     public Genre getGenreById(Integer genreId) {
         try {
-            return jdbc.queryForObject(genresSql.concat(" where id = ?"), mapper, genreId);
+            return jdbcTemplate.queryForObject(genresSql.concat(" where id = ?"), new GenreRowMapper(), genreId);
         } catch (Exception e) {
             return null;
         }
@@ -32,6 +30,6 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public Collection<Genre> getAllGenres() {
-        return jdbc.query(genresSql, mapper);
+        return jdbcTemplate.query(genresSql, new GenreRowMapper());
     }
 }

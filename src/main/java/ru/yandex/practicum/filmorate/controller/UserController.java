@@ -1,8 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
@@ -11,59 +9,53 @@ import javax.validation.Valid;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/users")
-@RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
 
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
-        log.info("Запрос создания пользователя.");
         return userService.createUser(user);
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public Collection<User> getUsers() {
-        log.info("Запрос списка пользователей.");
-        return userService.getUsers();
-    }
-
-    @PutMapping
-    public User update(@Valid @RequestBody User user) {
-        log.info("Запрос обновления пользователя.");
-        return userService.updateUser(user);
+    public Collection<User> getAllUsers() {
+        return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Integer id) {
-        log.info("Запрос ползователя по Id.");
+    public User getUserById(@PathVariable("id") Integer id) {
         return userService.getUserById(id);
     }
 
+    @GetMapping("/{id}/friends")
+    public Collection<User> getUserFriends(@PathVariable("id") Integer id) {
+        return userService.getUserFriends(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public Collection<User> getCommonFriends(@PathVariable("id") Integer id, @PathVariable("otherId") Integer otherId) {
+        return userService.getCommonFriends(id, otherId);
+    }
+
+    @PutMapping
+    public User updateUser(@Valid @RequestBody User user) {
+        return userService.updateUser(user);
+    }
+
     @PutMapping("/{id}/friends/{friendId}")
-    public void addFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
-        log.info("Запрос добавления в друзья.");
+    public void addFriend(@PathVariable("id") Integer id, @PathVariable("friendId") Integer friendId) {
         userService.addFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public void removeFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
-        log.info("Запрос удаления из друзей.");
+    public void deleteFriend(@PathVariable("id") Integer id, @PathVariable("friendId") Integer friendId) {
         userService.deleteFriend(id, friendId);
-    }
-
-    @GetMapping("/{id}/friends")
-    public Collection<User> getFriends(@PathVariable Integer id) {
-        log.info("Запрос списка друзей.");
-        return userService.getFriends(id);
-    }
-
-    @GetMapping("/{id}/friends/common/{otherId}")
-    public Collection<User> getCommonFriends(@PathVariable Integer id, @PathVariable Integer otherId) {
-        log.info("Запрос списка общих друзей.");
-        return userService.getCommonFriends(id, otherId);
     }
 }

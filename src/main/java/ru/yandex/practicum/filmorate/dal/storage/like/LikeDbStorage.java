@@ -8,23 +8,23 @@ import org.springframework.stereotype.Component;
 @Qualifier("LikeDbStorage")
 public class LikeDbStorage implements LikeStorage {
 
-    private final JdbcTemplate jdbc;
+    private final JdbcTemplate jdbcTemplate;
 
-    public LikeDbStorage(JdbcTemplate jdbc) {
-        this.jdbc = jdbc;
+    public LikeDbStorage(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
     public void addLikeToFilm(Integer filmId, Integer userId) {
         final String sql = "insert into likes (film_id, user_id) values (?, ?)";
 
-        jdbc.update(sql, filmId, userId);
+        jdbcTemplate.update(sql, filmId, userId);
     }
 
     @Override
     public void deleteLikeFromFilm(Integer filmId, Integer userId) {
         final String sql = "delete from likes where film_id = ? and user_id = ?";
 
-        jdbc.update(sql, filmId, userId);
+        jdbcTemplate.update(sql, filmId, userId);
     }
 }
