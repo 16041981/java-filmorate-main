@@ -4,7 +4,6 @@ import lombok.experimental.UtilityClass;
 
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.HashSet;
 import java.util.Objects;
 
 @UtilityClass
