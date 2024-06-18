@@ -126,7 +126,6 @@ public class FilmDbStorage implements FilmStorage {
         Integer mpaId = film.getMpa().getId();
 
         filmMpaStorage.addFilmMpa(filmId, mpaId);
-        //new LinkedHashSet<>(film.getGenres()).forEach(genre -> filmGenreStorage.addFilmGenre(filmId, genre.getId()));
         List<Genre> genres = (List<Genre>) film.getGenres();
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
