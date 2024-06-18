@@ -27,7 +27,8 @@ public class FilmDbStorage implements FilmStorage {
     private final FilmMpaStorage filmMpaStorage;
     private final MpaStorage mpaStorage;
     private final FilmGenreStorage filmGenreStorage;
-    private final String filmsSql = "select f.*, m.id as mpa_id, m.name as mpa_name from films f left join film_mpas fm on f.id = fm.film_id " +
+    private final String filmsSql =
+            "select f.*, m.id as mpa_id, m.name as mpa_name from films f left join film_mpas fm on f.id = fm.film_id " +
             "left join mpas m on fm.mpa_id = m.id";
 
     @Override
@@ -72,6 +73,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Collection<Film> getAllFilms() {
+
         Collection<Film> films = jdbcTemplate.query(filmsSql, new FilmRowMapper());
 
         return setFilmGenres(films);
