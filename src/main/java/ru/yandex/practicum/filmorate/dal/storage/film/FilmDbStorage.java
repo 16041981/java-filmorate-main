@@ -1,9 +1,11 @@
 package ru.yandex.practicum.filmorate.dal.storage.film;
 
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 import ru.yandex.practicum.filmorate.dal.mappers.FilmRowMapper;
 import ru.yandex.practicum.filmorate.dal.storage.filmGenre.FilmGenreStorage;
 import ru.yandex.practicum.filmorate.dal.storage.filmMpa.FilmMpaStorage;
@@ -13,6 +15,7 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -123,7 +126,24 @@ public class FilmDbStorage implements FilmStorage {
         Integer mpaId = film.getMpa().getId();
 
         filmMpaStorage.addFilmMpa(filmId, mpaId);
-        new LinkedHashSet<>(film.getGenres()).forEach(genre -> filmGenreStorage.addFilmGenre(filmId, genre.getId()));
+        //new LinkedHashSet<>(film.getGenres()).forEach(genre -> filmGenreStorage.addFilmGenre(filmId, genre.getId()));
+        List<Genre> genres = (List<Genre>) film.getGenres();
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        jdbc.batchUpdate("insert into film_genres (film_id, genre_id) values (?, ?)",
+                new BatchPreparedStatementSetter() {
+                    @Override
+                    public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
+                        preparedStatement.setInt(1, film.getId());
+                        preparedStatement.setInt(2, genres.get(i).getId());
+                    }
+
+                    @Override
+                    public int getBatchSize() {
+                        return genres.size();
+                    }
+                });
+        stopWatch.stop();
 
         Mpa filmMpa = mpaStorage.getMpaById(mpaId);
         Collection<Genre> filmGenres = filmGenreStorage.getAllFilmGenresById(filmId);
