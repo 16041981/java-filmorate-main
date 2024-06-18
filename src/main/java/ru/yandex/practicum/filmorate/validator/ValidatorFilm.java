@@ -32,6 +32,9 @@ public class ValidatorFilm {
         if (film.getMpa() == null) {
             throw new ValidationException("Дата релиза — не раньше 28 декабря 1895 года.");
         }
+        if (film.getGenres() == null || film.getGenres().size() > 6) {
+            throw new ValidationException("жанра с таким id нет");
+        }
     }
 
 }

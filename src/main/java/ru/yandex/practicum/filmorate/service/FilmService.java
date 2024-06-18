@@ -75,11 +75,15 @@ public class FilmService {
     }
 
     public Film getFilmById(Integer id) {
+        Collection<Film> films = filmStorage.getAllFilms();
+        for (Film film : films) {
+           if (film.getId() == id) {
+               throw new ValidationException("фильм с таким id уже существует");
+           }
+        }
+        validatorFilm.validate();
 
         Film film = filmStorage.getFilmById(id);
-
-
-        validatorFilm.validate(film);
 
         return film;
     }
