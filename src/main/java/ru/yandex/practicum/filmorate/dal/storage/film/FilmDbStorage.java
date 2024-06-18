@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.dal.storage.film;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate jdbcTemplate1;
     private final FilmMpaStorage filmMpaStorage;
     private final MpaStorage mpaStorage;
     private final FilmGenreStorage filmGenreStorage;
@@ -115,29 +117,28 @@ public class FilmDbStorage implements FilmStorage {
         int mpaId = film.getMpa().getId();
 
         filmMpaStorage.addFilmMpa(filmId, mpaId);
-        new LinkedHashSet<>(film.getGenres()).forEach(genre -> filmGenreStorage.addFilmGenre(filmId, genre.getId()));
 
-//        List<Genre> genres = (List<Genre>) film.getGenres();
-//        StopWatch stopWatch = new StopWatch();
-//        stopWatch.start();
-//        jdbcTemplate.batchUpdate("insert into film_genres (film_id, genre_id) values (?, ?)",
-//                new BatchPreparedStatementSetter() {
-//                    @Override
-//                    public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
-//                        preparedStatement.setInt(1, film.getId());
-//                        preparedStatement.setInt(2, genres.get(i).getId());
-//                    }
-//
-//                    @Override
-//                    public int getBatchSize() {
-//                        return genres.size();
-//                    }
-//                });
-//        stopWatch.stop();
+        Collection<Genre> genres = film.getGenres();
+        String sqlDelete = "DELETE FROM FILM_GENRES WHERE FILM_ID = :film_id AND GENRE_ID = :genre_id;";
+        String sqlInsert = "INSERT INTO FILM_GENRES(FILM_ID, GENRE_ID) VALUES ( :film_id, :genre_id );";
+
+        Map<String, Object>[] batchOfInputs = new HashMap[genres.size()];
+        int count = 0;
+
+        for (Genre genre: genres) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("film_id", filmId);
+            map.put("genre_id", genre.getId());
+            batchOfInputs[count++] = map;
+        }
+
+        jdbcTemplate1.batchUpdate(sqlDelete, batchOfInputs);
+        jdbcTemplate1.batchUpdate(sqlInsert, batchOfInputs);
 
         Mpa filmMpa = mpaStorage.getMpaById(mpaId);
         Collection<Genre> filmGenres = filmGenreStorage.getAllFilmGenresById(filmId);
 
         return film.toBuilder().id(filmId).mpa(filmMpa).genres(filmGenres).build();
     }
+
 }
