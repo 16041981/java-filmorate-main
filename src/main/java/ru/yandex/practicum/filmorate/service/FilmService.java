@@ -81,7 +81,6 @@ public class FilmService {
                throw new ValidationException("фильм с таким id уже существует");
            }
         }
-        validatorFilm.validate();
 
         Film film = filmStorage.getFilmById(id);
 
