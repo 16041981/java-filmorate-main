@@ -14,10 +14,10 @@ public class LikeService {
     }
 
     public void addLikeToFilm(Integer filmId, Integer userId) {
-        likeStorage.addLikeToFilm(filmId, userId);
+        likeStorage.addLike(filmId, userId);
     }
 
     public void deleteLikeFromFilm(Integer filmId, Integer userId) {
-        likeStorage.deleteLikeFromFilm(filmId, userId);
+        likeStorage.removeLike(filmId, userId);
     }
 }

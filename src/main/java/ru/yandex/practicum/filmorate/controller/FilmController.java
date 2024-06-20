@@ -35,7 +35,7 @@ public class FilmController {
 
     @GetMapping("/{id}")
     public Film getFilmById(@PathVariable("id") Integer id) {
-        return filmService.getFilmById(id);
+        return filmService.get(id);
     }
 
     @GetMapping("/popular")
@@ -53,8 +53,8 @@ public class FilmController {
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
         log.debug("Обновляется фильм: {}", film);
-
-        return filmService.updateFilm(film);
+        Film newFilm = filmService.createFilm(film);
+        return newFilm;
     }
 
 

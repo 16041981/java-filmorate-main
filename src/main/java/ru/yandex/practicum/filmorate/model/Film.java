@@ -2,33 +2,29 @@ package ru.yandex.practicum.filmorate.model;
 
 
 import lombok.*;
+import ru.yandex.practicum.filmorate.validator.ValidatorReleaseDate;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Comparator;
 import java.util.Set;
+import java.util.TreeSet;
 
-
-@EqualsAndHashCode(of = "id")
 @Data
-@Builder(toBuilder = true)
-@NoArgsConstructor
-@AllArgsConstructor
 public class Film {
 
-    private Collection<Genre> genres = new ArrayList<>();
-    private Mpa mpa;
-    @PositiveOrZero
     private Integer id;
-    @NotBlank
-    private String name;
-    @NotNull
-    @Size(min = 1, max = 200)
-    private String description;
-    private LocalDate releaseDate;
-    @Positive
-    private int duration;
-    private int rate;
-    private Set<Integer> likes;
+    @NotBlank(message = "Передана пустая строка или пробелы")
+    private final String name;
+    @NotBlank(message = "Передано пустое значение описания фильма")
+    @Size(max = 200, message = "Количество символов в описании не валидно")
+    private final String description;
+    @NotNull(message = "Передано пустое значение даты релиза фильма")
+    @ValidatorReleaseDate
+    private final LocalDate releaseDate;
+    @NotNull(message = "Передано пустое значение длительности фильма")
+    @Positive(message = "Передано отрицательное значение длительности фильма")
+    private final Integer duration;
+    private Set<Genre> genres = new TreeSet<>(Comparator.comparingInt(Genre::getId));
+    private Mpa mpa;
 }

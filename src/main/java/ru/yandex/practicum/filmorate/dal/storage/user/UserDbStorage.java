@@ -1,92 +1,138 @@
 package ru.yandex.practicum.filmorate.dal.storage.user;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.JdbcTemplate;
+import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.dal.mappers.UserRowMapper;
+
+import ru.yandex.practicum.filmorate.dal.extractor.UserExtractor;
+import ru.yandex.practicum.filmorate.dal.extractor.UsersExtractor;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.sql.PreparedStatement;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Component
-@Qualifier("UserDbStorage")
+@RequiredArgsConstructor
 public class UserDbStorage implements UserStorage {
-
-    private final JdbcTemplate jdbcTemplate;
-    private final String usersSql = "select * from users";
-
-    public UserDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-
-    }
+    private final NamedParameterJdbcOperations jdbc;
 
     @Override
-    public User createUser(User user) {
-        final String sql = "insert into users (name, login, birthday, email) values (?, ?, ?, ?)";
-        KeyHolder generatedKeyHolder = new GeneratedKeyHolder();
+    public User save(User user) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        Map<String, Object> param = Map.of(
+                "login", user.getLogin(),
+                "name", user.getName(),
+                "email", user.getEmail(),
+                "birthday", user.getBirthday()
+        );
+        String sql = """
+                INSERT INTO USERS(LOGIN, NAME, EMAIL, BIRTHDAY)
+                VALUES ( :login, :name, :email, :birthday);
+                """;
 
-        jdbcTemplate.update(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql,
-                    new String[]{"id"});
-            preparedStatement.setString(1, user.getName());
-            preparedStatement.setString(2, user.getLogin());
-            preparedStatement.setObject(3, user.getBirthday());
-            preparedStatement.setString(4, user.getEmail());
+        jdbc.update(sql, new MapSqlParameterSource().addValues(param), keyHolder, new String[]{"user_id"});
 
-            return preparedStatement;
-        }, generatedKeyHolder);
-
-        int userId = Objects.requireNonNull(generatedKeyHolder.getKey()).intValue();
-
-        user.setId(userId);
-
+        user.setId(keyHolder.getKeyAs(Integer.class));
         return user;
     }
 
     @Override
-    public User getUserById(Integer userId) {
-        try {
-            return jdbcTemplate.queryForObject(usersSql.concat(" where id = ?"), new UserRowMapper(), userId);
-        } catch (Exception e) {
-            return null;
-        }
+    public void delete(int userId) {
+        String sql = "DELETE FROM USERS WHERE USER_ID = :user_id";
+        Map<String, Object> param = Map.of("user_id", userId);
+        jdbc.update(sql, param);
     }
 
     @Override
-    public Collection<User> getAllUsers() {
-        return jdbcTemplate.query(usersSql, new UserRowMapper());
-    }
-
-    @Override
-    public User updateUser(User user) {
-        final String sql = "update users set name = ?, login = ?, birthday = ?, email = ? where id = ?";
-
-        jdbcTemplate.update(
-                sql,
-                user.getName(), user.getLogin(), user.getBirthday(), user.getEmail(), user.getId()
+    public void update(User user) {
+        Map<String, Object> param = Map.of(
+                "user_id", user.getId(),
+                "login", user.getLogin(),
+                "name", user.getName(),
+                "email", user.getEmail(),
+                "birthday", user.getBirthday()
         );
 
-        return user;
+        String sql = """
+                UPDATE USERS
+                    SET LOGIN = :login,
+                        NAME = :name,
+                        EMAIL = :email,
+                        BIRTHDAY = :birthday
+                WHERE USER_ID = :user_id;
+                """;
+
+        jdbc.update(sql, param);
     }
 
     @Override
-    public Collection<User> getUserFriends(Integer userId) {
-        final String sql = "select * from users where id in (select f.friend_id from users u join friendships f " +
-                "on u.id = f.user_id where u.id = ?)";
+    public Optional<User> getById(int userId) {
+        Map<String, Object> param = Map.of("user_id", userId);
+        String sql = """
+                SELECT USER_ID, LOGIN, NAME, EMAIL, BIRTHDAY
+                FROM USERS
+                WHERE USER_ID = :user_id
+                """;
 
-        return jdbcTemplate.query(sql, new UserRowMapper(), userId);
+        User user = jdbc.query(sql, param, new UserExtractor());
+
+
+        return Optional.ofNullable(user);
     }
 
     @Override
-    public Collection<User> getCommonFriends(Integer user1Id, Integer user2Id) {
-        final String sql = "select * from users where id in (select friend_id from users u join friendships f on " +
-                "u.id = f.user_id where u.id = ?) and id in (select friend_id from users u join friendships f on " +
-                "u.id = f.user_id where u.id = ?)";
+    public List<User> getAll() {
+        String sql = "SELECT USER_ID, LOGIN, NAME, EMAIL, BIRTHDAY FROM USERS;";
 
-        return jdbcTemplate.query(sql, new UserRowMapper(), user1Id, user2Id);
+        return jdbc.query(sql, new UsersExtractor());
+    }
+
+    @Override
+    public void addFriend(int userId, int friendId) {
+        String sql = "MERGE INTO FRIENDS(USER_ID, FRIEND_ID) VALUES ( :user_id, :friend_id );";
+        Map<String, Object> param = Map.of(
+                "user_id", userId,
+                "friend_id", friendId
+        );
+        jdbc.update(sql, param);
+    }
+
+    @Override
+    public void deleteFriend(int userId, int friendId) {
+        String sql = "DELETE FROM FRIENDS WHERE USER_ID = :user_id AND FRIEND_ID = :friend_id;";
+        Map<String, Object> param = Map.of(
+                "user_id", userId,
+                "friend_id", friendId
+        );
+        jdbc.update(sql, param);
+    }
+
+    @Override
+    public List<User> getFriends(int userId) {
+        String sql = "SELECT USER_ID, LOGIN, NAME, EMAIL, BIRTHDAY FROM USERS WHERE USER_ID IN (SELECT FRIEND_ID AS ID FROM FRIENDS WHERE USER_ID = :user_id);";
+        Map<String, Object> param = Map.of("user_id", userId);
+
+        return jdbc.query(sql, param, new UsersExtractor());
+    }
+
+    @Override
+    public List<User> getMutualFriends(int userId, int otherId) {
+        String sql = """
+                SELECT USER_ID, LOGIN, NAME, EMAIL, BIRTHDAY FROM USERS WHERE USER_ID IN (SELECT FRIEND_ID AS ID
+                FROM FRIENDS
+                WHERE USER_ID = :user_id
+                  AND FRIEND_ID = (SELECT FRIEND_ID FROM FRIENDS WHERE USER_ID = :other_id));
+                ;
+                """;
+        Map<String, Object> param = Map.of(
+                "user_id", userId,
+                "other_id", otherId
+        );
+
+        return jdbc.query(sql, param, new UsersExtractor());
     }
 }

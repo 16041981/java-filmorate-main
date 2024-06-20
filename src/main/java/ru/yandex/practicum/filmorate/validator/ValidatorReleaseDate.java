@@ -1,13 +1,19 @@
 package ru.yandex.practicum.filmorate.validator;
 
-import javax.validation.ConstraintValidatorContext;
-import java.time.LocalDate;
+import javax.validation.Constraint;
+import javax.validation.Payload;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class ValidatorReleaseDate {
+@Target({ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
+@Constraint(validatedBy = ValidDateReleaseValidator.class)
+public @interface ValidatorReleaseDate {
+    String message() default "Передано не валидная дата";
 
-    public boolean isValid(LocalDate date, ConstraintValidatorContext constraintValidatorContext) {
-        LocalDate firstFilmDate = LocalDate.parse("1895-12-28");
+    Class<?>[] groups() default {};
 
-        return date.isEqual(firstFilmDate) || date.isAfter(firstFilmDate);
-    }
+    Class<? extends Payload>[] payload() default {};
 }
