@@ -29,6 +29,13 @@ public class GenreDbStorage implements GenreStorage {
     }
 
     @Override
+    public List<Genre> getGenreByIdDesc(List<Integer> genresId) {
+        String sql = "SELECT GENRE_ID, NAME FROM GENRES WHERE GENRE_ID = :genre_id ORDER BY ENRE_ID DESC";
+        Map<String, Object> param = Map.of("genres_id", genresId);
+        return jdbc.query(sql, param, new GenreRowMapper());
+    }
+
+    @Override
     public List<Genre> getGenresById(List<Integer> genresId) {
         String sql = "SELECT GENRE_ID, NAME FROM GENRES WHERE GENRE_ID IN ( :genres_id )";
         Map<String, Object> param = Map.of("genres_id", genresId);
