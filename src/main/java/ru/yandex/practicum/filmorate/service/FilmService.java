@@ -43,7 +43,7 @@ public class FilmService {
 
         if (!film.getGenres().isEmpty()) {
             Set<Genre> genres = Set.copyOf(
-                    genreStorage.getGenreByIdDesc(
+                    genreStorage.getGenresById(
                             film.getGenres().stream().map(Genre::getId).collect(Collectors.toList())));
             if (genres.size() != film.getGenres().size()) {
                 throw new ValidationException("Одного из жанров нет в базе");
