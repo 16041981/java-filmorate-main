@@ -25,6 +25,6 @@ public class Film {
     @NotNull(message = "Передано пустое значение длительности фильма")
     @Positive(message = "Передано отрицательное значение длительности фильма")
     private final Integer duration;
-    private Set<Genre> genres = new TreeSet<>(Comparator.comparingInt(Genre::getId));
     private Mpa mpa;
+    private Set<Genre> genres = new TreeSet<>(Comparator.comparingInt(Genre::getId));
 }
