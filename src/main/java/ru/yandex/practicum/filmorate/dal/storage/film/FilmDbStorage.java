@@ -57,8 +57,7 @@ public class FilmDbStorage implements FilmStorage {
         INSERT INTO FILMS(NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATING)
         VALUES (:name, :description, :releaseDate, :duration, :idRating);
         """;
-
-
+        
         jdbc.update(sql, new MapSqlParameterSource().addValues(paramFilm), keyHolder, new String[]{"film_id"});
         film.setId(keyHolder.getKeyAs(Integer.class));
         saveGenresForFilm(film.getId(), film.getGenres());
