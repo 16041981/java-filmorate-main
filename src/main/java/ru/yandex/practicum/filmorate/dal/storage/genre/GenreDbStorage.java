@@ -23,7 +23,7 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public Optional<Genre> getGenreById(int genreId) {
-        String sql = "SELECT GENRE_ID, NAME FROM GENRES WHERE GENRE_ID = :genre_id";
+        String sql = "SELECT GENRE_ID, NAME FROM GENRES WHERE GENRE_ID = :genre_id ORDER BY ENRE_ID DESC";
         Map<String, Object> param = Map.of("genre_id", genreId);
         return Optional.ofNullable(jdbc.query(sql, param, new GenreExtractor()));
     }
@@ -37,7 +37,7 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public List<Genre> getGenres() {
-        String sql = "SELECT GENRE_ID AS ID, NAME FROM GENRES ORDER BY GENRE_ID DESC;";
+        String sql = "SELECT GENRE_ID AS ID, NAME FROM GENRES ;";
         return jdbc.query(sql, new GenreRowMapper());
     }
 }
