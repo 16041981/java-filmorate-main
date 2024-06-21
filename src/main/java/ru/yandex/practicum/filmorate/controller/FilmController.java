@@ -53,8 +53,7 @@ public class FilmController {
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
         log.debug("Обновляется фильм: {}", film);
-        Film newFilm = filmService.createFilm(film);
-        return newFilm;
+        return filmService.put(film);
     }
 
 
