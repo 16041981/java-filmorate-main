@@ -84,8 +84,8 @@ public class FilmService {
 
         if (!film.getGenres().isEmpty()) {
             Set<Genre> genres =
-                    Set.copyOf(genreStorage.getGenresById(film.getGenres().stream().
-                            map(Genre::getId).collect(Collectors.toList())));
+                    Set.copyOf(genreStorage.getGenresById(film.getGenres().stream()
+                            .map(Genre::getId).collect(Collectors.toList())));
             if (genres.size() != film.getGenres().size()) {
                 throw new ValidationException("Одного из жанров нет в базе");
             }
@@ -111,8 +111,8 @@ public class FilmService {
         if (!film.getGenres().isEmpty()) {
             Set<Genre> genres =
                     Set.copyOf(
-                            genreStorage.getGenresById(film.getGenres().stream().
-                                    map(Genre::getId).collect(Collectors.toList())));
+                            genreStorage.getGenresById(film.getGenres().stream()
+                                    .map(Genre::getId).collect(Collectors.toList())));
             if (genres.size() != film.getGenres().size()) {
                 throw new ValidationException("Одного из жанров нет в базе");
             }
