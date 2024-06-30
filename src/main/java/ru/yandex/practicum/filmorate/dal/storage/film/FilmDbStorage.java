@@ -111,7 +111,7 @@ public class FilmDbStorage implements FilmStorage {
                  FROM FILMS
                  JOIN FILM_GENRES ON FILMS.FILM_ID = FILM_GENRES.FILM_ID
                  LEFT JOIN GENRES ON FILM_GENRES.GENRE_ID = GENRES.GENRE_ID
-                 JOIN RATINGS ON FILMS.RATING = RATINGS.RATING_ID;
+                 JOIN RATINGS ON FILMS.RATING = RATINGS.RATING_ID ORDER BY GENRES.GENRE_ID;
                  """;
         return getFilms(sql, Map.of());
     }

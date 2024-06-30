@@ -10,7 +10,7 @@ public interface GenreStorage {
 
     List<Genre> getGenresById(List<Integer> genreIds);
 
-    List<Genre> getGenreByIdDesc(List<Integer> genreIds);
+//    List<Genre> getGenreByIdDesc(List<Integer> genreIds);
 
     List<Genre> getGenres();
 }
