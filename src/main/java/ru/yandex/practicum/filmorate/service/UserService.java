@@ -1,80 +1,91 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
-import ru.yandex.practicum.filmorate.validator.ValidatorUser;
+import ru.yandex.practicum.filmorate.dal.storage.user.UserStorage;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-@Getter
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class UserService {
+
     private final UserStorage userStorage;
 
-    ValidatorUser validatorUser = new ValidatorUser();
-
-    public void addFriend(Long userId, Long friendId) {
-        User user = userStorage.getUserById(userId);
-        User friend = userStorage.getUserById(friendId);
-        user.addFriend(friendId);
-        friend.addFriend(userId);
-        log.info("'{}' добавлен '{}' в список друзей.", userId, friendId);
-    }
-
-    public void deleteFriend(Long userId, Long friendId) {
-        User user = userStorage.getUserById(userId);
-        User friend = userStorage.getUserById(friendId);
-        user.removeFriend(friendId);
-        friend.removeFriend(userId);
-        log.info("'{}' удален '{}' из списка друзей.", userId, friendId);
-    }
-
-    public List<User> getCommonFriends(Long userId, Long friendId) {
-        User user = userStorage.getUserById(userId);
-        User friend = userStorage.getUserById(friendId);
-        Set<Long> userFriends = user.getFriends();
-        Set<Long> friendFriends = friend.getFriends();
-        log.info("'{}' запрошенный список общих друзей у пользователя '{}'.", userId, friendId);
-        if (userFriends.stream().anyMatch(friendFriends::contains)) {
-            return userFriends.stream()
-                    .filter(userFriends::contains)
-                    .filter(friendFriends::contains)
-                    .map(userStorage::getUserById).collect(Collectors.toList());
-        } else {
-            return new ArrayList<>();
-        }
-    }
-
-    public List<User> getFriends(Long userId) {
-        User user = userStorage.getUserById(userId);
-        Set<Long> friends = user.getFriends();
-        return friends.stream()
-                .map(userStorage::getUserById)
-                .collect(Collectors.toList());
+    public UserService(UserStorage userStorage) {
+        this.userStorage = userStorage;
     }
 
     public User createUser(User user) {
-        validatorUser.validate(user);
-        return userStorage.createUser(user);
+        if (user.getName() == null) {
+            user.setName(user.getLogin());
+        }
+        return userStorage.save(user);
     }
 
-    public List<User> getUsers() {
-        return userStorage.getUsers();
+    public Collection<User> getAllUsers() {
+        return userStorage.getAll();
+    }
+
+    public User getUserById(Integer id) {
+        try {
+            return userStorage.getById(id).orElseThrow();
+        } catch (EmptyResultDataAccessException e) {
+            throw new ObjectNotFoundException(String.format("Пользователя с id %s нет в базе", id));
+        }
+    }
+
+    public Collection<User> getUserFriends(Integer userId) {
+        userStorage.getById(userId).orElseThrow(() ->
+                new ObjectNotFoundException(String.format("Пользователя с id %s нет в базе", userId)));
+        return userStorage.getFriends(userId);
+    }
+
+    public Collection<User> getCommonFriends(Integer userId, Integer friendId) {
+        userStorage.getById(userId).orElseThrow(() ->
+                new ObjectNotFoundException(String.format("Пользователя с id %s нет в базе", userId)));
+        userStorage.getById(friendId).orElseThrow(() ->
+                new ObjectNotFoundException(String.format("Пользователя с id %s нет в базе", friendId)));
+
+        return userStorage.getMutualFriends(userId, friendId);
     }
 
     public User updateUser(User user) {
-        validatorUser.validate(user);
-        return userStorage.updateUser(user);
+        if (user.getName() == null) {
+            user.setName(user.getLogin());
+        }
+        userStorage.getById(user.getId()).orElseThrow(() ->
+                new ObjectNotFoundException(String.format("Пользователя id %s нет в базе", user.getId())));
+        userStorage.update(user);
+        return user;
+
     }
 
-    public User getUserById(Long id) {
-        return userStorage.getUserById(id);
+    public User addFriend(Integer userId, Integer friendId) {
+        User user = userStorage.getById(userId).orElseThrow(() ->
+                new ObjectNotFoundException(String.format("Пользователя с id %s нет в базе", userId)));
+        userStorage.getById(friendId).orElseThrow(() ->
+                new ObjectNotFoundException(String.format("Пользователя с id %s нет в базе", friendId)));
+
+        userStorage.addFriend(userId, friendId);
+        return userStorage.getById(userId).orElseThrow();
     }
+
+
+    public void deleteFriend(Integer userId, Integer friendId) {
+        userStorage.getById(userId).orElseThrow(() ->
+                new ObjectNotFoundException(String.format("Пользователя с id %s нет в базе", userId)));
+        userStorage.getById(friendId).orElseThrow(() ->
+                new ObjectNotFoundException(String.format("Пользователя с id %s нет в базе", friendId)));
+        userStorage.deleteFriend(userId, friendId);
+    }
+
 }
+
+
+
+
+
